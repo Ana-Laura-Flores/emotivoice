@@ -1,0 +1,29 @@
+# Ignorar archivos de configuración de entornos
+.env
+.env.local
+
+# Ignorar archivos de Python compilados
+__pycache__/
+*.py[cod]
+
+# Ignorar archivos temporales de editores
+*.swp
+*.swo
+*.bak
+
+# Ignorar archivos de compilación
+build/
+dist/
+*.egg-info/
+
+# Ignorar archivos de datos
+*.csv
+*.json
+temp_audio.wav
+
+# Ignorar carpetas de entorno virtual
+venv/
+env/
+.venv/
+api_env/
+_MACOSX
