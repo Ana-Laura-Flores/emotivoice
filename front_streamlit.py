@@ -1,14 +1,14 @@
 import streamlit as st
 import requests
-from PIL import Image
 import base64
+import time
 
 # Función para convertir imagen a base64
 def image_to_base64(img_path):
     with open(img_path, "rb") as img_file:
         return base64.b64encode(img_file.read()).decode()
 
-# Dirección de la API de FastAPI (asegúrate de que tu FastAPI esté corriendo)
+# Dirección de la API de FastAPI
 API_URL = "http://localhost:8000/sentiment"
 
 # Ocultar Streamlit default style
@@ -33,52 +33,55 @@ st.markdown(
             background-color: #F5F5F5;
             font-family: 'Arial', sans-serif;
         }
+        .intro-animation {
+            text-align: center;
+            margin-top: 50px;
+        }
+        .emotivoice-text {
+            display: inline-block;
+            font-size: 40px;
+            color: #00BFFF;
+            margin: 20px 0;
+        }
         .logo-container {
             display: flex;
             align-items: center;
             justify-content: left;
-            margin: 20px 0;
-        }
-        .logo {
-            margin-right: 20px;
+            margin-top: 20px;
         }
         .title {
             color: #00BFFF;
             font-size: 35px;
-            text-align: left;
-            text-shadow: 1px 1px 2px #FFFFFF;
-        }
-        .subheader {
-            color: #FF6347;
-            font-size: 20px;
-            text-align: center;
-            margin: 10px 0;
-        }
-        .result {
-            color: #4CAF50;
-            font-size: 18px;
-            text-align: center;
-            margin-top: 20px;
-        }
-        .error {
-            color: #FF6347;
-            font-size: 18px;
-            text-align: center;
-            margin-top: 20px;
-        }
-        hr {
-            border: 1px solid #E0E0E0;
-        }
-        footer {
-            text-align: center;
-            margin: 20px 0;
-            color: #777;
+            margin-left: 20px;
         }
     </style>
     """, unsafe_allow_html=True
 )
 
-# Mostrar el logo y el título
+# Variable de estado para controlar la introducción
+if 'show_intro' not in st.session_state:
+    st.session_state.show_intro = True
+
+# Contenedor para la animación de introducción
+if st.session_state.show_intro:
+    intro_container = st.empty()
+    intro_container.markdown(
+        f"""
+        <div class="intro-animation">
+            <img src="data:image/png;base64,{logo_base64}" alt="Logo" width="200">
+            <h1 class="emotivoice-text">EmotiVoice</h1>
+        </div>
+        """, unsafe_allow_html=True
+    )
+    st.audio("images/Emotivoice-.mp3")  # Añade la ruta a tu archivo de audio
+    # Esperar 5 segundos antes de mostrar el contenido
+    time.sleep(5)
+    # Limpiar el contenedor de introducción
+    intro_container.empty()
+    # Desactivar la introducción para futuras cargas
+    st.session_state.show_intro = False
+
+# Mostrar el resto del contenido
 st.markdown(
     f"""
     <div class="logo-container">
@@ -89,21 +92,21 @@ st.markdown(
 )
 
 # Subir archivo de audio
-st.markdown("<h3 class='subheader'>🎵 Sube tu archivo de audio para analizar:</h3>", unsafe_allow_html=True)
-audio_file = st.file_uploader("Sube tu archivo de audio", type=["wav", "mp3"], label_visibility="collapsed")
+st.markdown("<h3 class='subheader'> Sube tu archivo de audio para analizar:</h3>", unsafe_allow_html=True)
+audio_file_upload = st.file_uploader("Sube tu archivo de audio", type=["wav", "mp3"], label_visibility="collapsed")
 
 # Si se sube un archivo de audio, realizar la predicción
-if audio_file is not None:
+if audio_file_upload is not None:
     # Guardar temporalmente el archivo en Streamlit
     with open("temp_audio.wav", "wb") as f:
-        f.write(audio_file.getbuffer())
+        f.write(audio_file_upload.getbuffer())
 
     # Organizar audio y resultado en dos columnas
     col1, col2 = st.columns(2)
 
     with col1:
         # Mostrar reproductor de audio
-        st.audio(audio_file, format="audio/wav")
+        st.audio(audio_file_upload, format="audio/wav")
 
     with col2:
         # Enviar archivo a la API FastAPI
@@ -113,7 +116,7 @@ if audio_file is not None:
         # Mostrar los resultados
         if response.status_code == 200:
             emotion = response.json().get("emotion")
-            st.markdown(f"<h5 class='result'>😊 Emoción detectada: {emotion}</h5>", unsafe_allow_html=True)
+            st.markdown(f"<h5 class='result'> Emoción detectada: {emotion}</h5>", unsafe_allow_html=True)
         else:
             st.markdown("<h5 class='error'>❌ Ocurrió un error en la predicción</h5>", unsafe_allow_html=True)
 
