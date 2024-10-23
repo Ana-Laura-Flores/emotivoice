@@ -10,7 +10,7 @@ from pydantic import BaseModel
 app = FastAPI()
 
 # Cargar el modelo previamente entrenado
-model = joblib.load("modelos/modelo_emociones.pkl")
+model = joblib.load("modelos/modelo_emociones-02.pkl")
 
 # Definir la clase para la respuesta de predicción
 class PredictionResponse(BaseModel):
@@ -116,11 +116,9 @@ async def predict(file: UploadFile = File(...)):
 
             # Seleccionar solo las características esperadas por el modelo (18 características)
             selected_features = [
-                'Frecuencia de muestreo',
                 'Duración (s)',
                 'Frecuencia Fundamental (Hz)',
                 'Amplitud Máxima',
-                'Amplitud Mínima',
                 'Tasa de Cruce por Cero',
                 'Valor RMS',
                 'Entropía Espectral',
@@ -131,9 +129,7 @@ async def predict(file: UploadFile = File(...)):
                 'Frecuencia Centroidal',
                 'Rolloff',
                 'Bandwidth',
-                'Flatness',
-                '0',  # Añadir cero
-                '0'   # Añadir cero
+                'Flatness'
             ]
 
             features_array = np.array([features[feature] for feature in selected_features]).reshape(1, -1)

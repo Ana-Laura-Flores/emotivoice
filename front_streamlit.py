@@ -46,13 +46,29 @@ st.markdown(
         .logo-container {
             display: flex;
             align-items: center;
-            justify-content: left;
+            justify-content: center;
             margin-top: 20px;
         }
         .title {
             color: #00BFFF;
             font-size: 35px;
             margin-left: 20px;
+        }
+        .play-button-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .play-button {
+            background-color: #00BFFF;
+            color: white;
+            font-size: 20px;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            text-align: center;
         }
     </style>
     """, unsafe_allow_html=True
@@ -61,6 +77,7 @@ st.markdown(
 # Variable de estado para controlar la introducción
 if 'show_intro' not in st.session_state:
     st.session_state.show_intro = True
+    st.session_state.audio_played = False  # Añadir estado para el audio
 
 # Contenedor para la animación de introducción
 if st.session_state.show_intro:
@@ -73,11 +90,21 @@ if st.session_state.show_intro:
         </div>
         """, unsafe_allow_html=True
     )
-    st.audio("images/Emotivoice-.mp3")  # Añade la ruta a tu archivo de audio
+    
+    # Botón para reproducir la música
+    play_button = st.empty()
+    if play_button.button("Escucha nuestra canción", key="play_button"):
+        st.session_state.audio_played = True
+    
+    if st.session_state.audio_played:
+        audio_file = open("images/Emotivoice-.mp3", "rb").read()
+        st.audio(audio_file, format="audio/mp3")
+
     # Esperar 5 segundos antes de mostrar el contenido
     time.sleep(5)
     # Limpiar el contenedor de introducción
     intro_container.empty()
+    play_button.empty()  # Limpiar el botón de reproducción
     # Desactivar la introducción para futuras cargas
     st.session_state.show_intro = False
 
@@ -116,7 +143,7 @@ if audio_file_upload is not None:
         # Mostrar los resultados
         if response.status_code == 200:
             emotion = response.json().get("emotion")
-            st.markdown(f"<h5 class='result'> Emoción detectada: {emotion}</h5>", unsafe_allow_html=True)
+            st.markdown(f"<h5 class='result'>✔️ Emoción detectada: {emotion}</h5>", unsafe_allow_html=True)
         else:
             st.markdown("<h5 class='error'>❌ Ocurrió un error en la predicción</h5>", unsafe_allow_html=True)
 
