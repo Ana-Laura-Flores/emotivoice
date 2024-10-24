@@ -130,13 +130,14 @@ async def predict(file: UploadFile = File(...)):
                 'Rolloff',
                 'Bandwidth',
                 'Flatness'
+                
             ]
 
             features_array = np.array([features[feature] for feature in selected_features]).reshape(1, -1)
             print(f"Características preparadas para el modelo: {features_array}")
 
             # Verificar que las características sean correctas
-            if features_array.shape[1] != 18:
+            if features_array.shape[1] != 14:
                 raise HTTPException(status_code=500, detail="No se extrajeron características válidas.")
 
             # Predicción del modelo

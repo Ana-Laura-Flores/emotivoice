@@ -101,7 +101,7 @@ if st.session_state.show_intro:
         st.audio(audio_file, format="audio/mp3")
 
     # Esperar 5 segundos antes de mostrar el contenido
-    time.sleep(5)
+    time.sleep(2)
     # Limpiar el contenedor de introducción
     intro_container.empty()
     play_button.empty()  # Limpiar el botón de reproducción
@@ -149,4 +149,4 @@ if audio_file_upload is not None:
 
 # Pie de página personalizado
 st.markdown("<hr>", unsafe_allow_html=True)
-st.markdown("<p style='text-align: center;'>© 2024 - Proyecto de Análisis de Emociones</p>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center;'>© 2024 - Emotivoice - Análisis de Emociones</p>", unsafe_allow_html=True)
