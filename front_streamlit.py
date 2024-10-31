@@ -46,12 +46,12 @@ st.markdown(
         .logo-container {
             display: flex;
             align-items: center;
-            justify-content: center;
+            justify-content: left;
             margin-top: 20px;
         }
         .title {
             color: #00BFFF;
-            font-size: 35px;
+            font-size: 45px;
             margin-left: 20px;
         }
         .play-button-container {
@@ -101,7 +101,7 @@ if st.session_state.show_intro:
         st.audio(audio_file, format="audio/mp3")
 
     # Esperar 5 segundos antes de mostrar el contenido
-    time.sleep(2)
+    time.sleep(5)
     # Limpiar el contenedor de introducción
     intro_container.empty()
     play_button.empty()  # Limpiar el botón de reproducción
@@ -112,7 +112,7 @@ if st.session_state.show_intro:
 st.markdown(
     f"""
     <div class="logo-container">
-        <img src="data:image/png;base64,{logo_base64}" alt="logo" width="100" class="logo">
+        <img src="data:image/png;base64,{logo_base64}" alt="logo" width="200" class="logo">
         <h1 class="title">Análisis de emociones <br> a través de audio</h1>
     </div>
     """, unsafe_allow_html=True
